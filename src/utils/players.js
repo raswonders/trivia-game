@@ -1,5 +1,3 @@
-const { data } = require("cheerio/lib/api/attributes");
-
 const players = [];
 
 const addPlayer = ({ id, playerName, room }) => {
