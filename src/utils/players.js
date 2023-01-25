@@ -46,10 +46,10 @@ const getAllPlayers = (room) => {
   return players.filter((player) => player.room === room);
 };
 
-const removePlayer(id) => {
+const removePlayer = (id) => {
   return players.find((player, index) => {
     if (player.id === id) {
-      return players.splice(index, i)[0];
+      return players.splice(index, 1)[0];
     }
     return false;
   });
