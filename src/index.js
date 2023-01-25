@@ -21,9 +21,20 @@ const io = socketio(server); // connect Socket.IO to server
 const publicDirectoryPath = path.join(__dirname, '../public');
 app.use(express.static(publicDirectoryPath));
 
-io.on('connection', () => {
+io.on('connection', (socket) => {
   console.log('A new player just connected');
-})
+
+  socket.on('join', ({ playerName, room }, callback) => {
+    const { error, newPlayer } = addPlayer({ id: socket.id, playerName, room });
+
+    if (error) return callback(error.message);
+    callback();
+
+    socket.join(newPlayer.room);
+
+    socket.emit('message', formatMessage('Admin', 'Welcome!'));
+  });
+});
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}.`);
