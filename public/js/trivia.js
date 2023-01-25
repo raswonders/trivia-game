@@ -21,3 +21,20 @@ socket.emit(('join'), { playerName, room }, error => {
     location.href = '/';
   }
 });
+
+socket.on("message", ({ playerName, text, createdAt }) => {
+  
+  const chatMessages = document.querySelector(".chat__messages");
+
+  const messageTemplate = document.querySelector("#message-template").innerHTML;
+
+  const template = Handlebars.compile(messageTemplate);
+
+  const html = template({
+    playerName,
+    text,
+    createdAt: moment(createdAt).format("h:mm a"),
+  });
+
+  chatMessages.insertAdjacentHTML("afterBegin", html);
+});
