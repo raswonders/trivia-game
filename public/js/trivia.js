@@ -38,3 +38,20 @@ socket.on("message", ({ playerName, text, createdAt }) => {
 
   chatMessages.insertAdjacentHTML("afterBegin", html);
 });
+
+socket.on("room", ({ room, players }) => {
+  const gameInfo = document.querySelector(".game-info");
+
+  const sidebarTemplate = document.querySelector(
+    "#game-info-template"
+  ).innerHTML;
+
+  const template = Handlebars.compile(sidebarTemplate);
+
+  const html = template({
+    room,
+    players,
+  });
+
+  gameInfo.innerHTML = html;
+})
