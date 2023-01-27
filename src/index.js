@@ -45,6 +45,7 @@ io.on('connection', (socket) => {
         room: newPlayer.room,
         players: getAllPlayers(newPlayer.room),
       });
+  });
 
   socket.on("disconnect", () => {
     console.log("A player disconnected");
@@ -63,9 +64,7 @@ io.on('connection', (socket) => {
         players: getAllPlayers(room),
       });
     }
-})
-
-  });
+  })
 });
 
 
