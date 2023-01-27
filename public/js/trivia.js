@@ -15,7 +15,7 @@ document.querySelector("main").insertAdjacentHTML(
   })
 );
 
-socket.emit(('join'), { playerName, room }, error => {
+socket.emit("join", { playerName, room }, error => {
   if (error) {
     alert(error);
     location.href = '/';
