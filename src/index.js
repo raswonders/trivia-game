@@ -11,7 +11,7 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketio = require('socket.io');
-const { setGame } = require("./utils/game");
+const { setGame, setGameStatus } = require("./utils/game.js");
 const { compareDocumentPosition } = require("domutils");
 
 const port = process.env.PORT || 8080;
@@ -96,8 +96,34 @@ io.on('connection', (socket) => {
       });
     }
   });
+
+  // import setGameStatus function
+  socket.on("sendAnswer", (answer, callback) => {
+    const { error, player } = getPlayer(socket.id);
+
+    if (error) return callback(error.message);
+
+    if (player) {
+      const { isRoundOver } = setGameStatus({
+        event: "sendAnswer",
+        playerId: player.id,
+        room: player.room,
+      });
+
+      // Since we want to show the player's submission to the rest of the players,
+      // we have to emit an event (`answer`) to all the players in the room along
+      // with the player's answer and `isRoundOver`.
+      io.to(player.room).emit("answer", {
+        ...formatMessage(player.playerName, answer),
+        isRoundOver,
+      });
+
+      callback();
+    }
+  });
 });
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}.`);
 });
+
