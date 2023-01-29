@@ -76,3 +76,10 @@ chatForm.addEventListener("submit", (event) => {
     if (error) return alert(error);
   })
 })
+
+const triviaQuestionButton = document.querySelector(".trivia__question-btn");
+triviaQuestionButton.addEventListener("click", () => {
+  socket.emit("getQuestion", null, (error) => {
+    if (error) return alert(error);
+  });
+});

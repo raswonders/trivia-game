@@ -11,6 +11,8 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketio = require('socket.io');
+const { setGame } = require("./utils/game");
+const { compareDocumentPosition } = require("domutils");
 
 const port = process.env.PORT || 8080;
 
@@ -79,9 +81,22 @@ io.on('connection', (socket) => {
       callback();
     }
   })
+
+  socket.on("getQuestion", (data, callback) => {
+    const { error, player } = getPlayer(socket.id);
+
+    if (error) return callback(error.message);
+
+    if (player) {
+      setGame((game) => {
+        io.to(player.room).emit("question", {
+          playerName: player.playerName,
+          ...game.prompt,
+        });
+      });
+    }
+  });
 });
-
-
 
 server.listen(port, () => {
   console.log(`Server is up on port ${port}.`);
