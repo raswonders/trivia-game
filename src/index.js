@@ -11,7 +11,7 @@ const express = require("express");
 const http = require("http");
 const path = require("path");
 const socketio = require('socket.io');
-const { setGame, setGameStatus } = require("./utils/game.js");
+const { setGame, setGameStatus, getGameStatus } = require("./utils/game.js");
 const { compareDocumentPosition } = require("domutils");
 
 const port = process.env.PORT || 8080;
@@ -119,6 +119,22 @@ io.on('connection', (socket) => {
       });
 
       callback();
+    }
+  });
+
+  socket.on("getAnswer", (data, callback) => {
+    const { error, player } = getPlayer(socket.id);
+  
+    if (error) return callback(error.message);
+  
+    if (player) {
+      const { correctAnswer } = getGameStatus({
+        event: "getAnswer",
+      });
+      io.to(player.room).emit(
+        "correctAnswer",
+        formatMessage(player.playerName, correctAnswer)
+      );
     }
   });
 });
